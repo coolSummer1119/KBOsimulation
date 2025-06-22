@@ -12,14 +12,14 @@ import com.example.demo.dao.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-class ClearPlayerTest {
+class RemoveAllPlayerTest {
 
     PlayerRepository playerRepository = new PlayerRepository();
 
     @Test
     void ClearPlayer() {
     	try {
-			playerRepository.clearAllPlayer();
+			playerRepository.removeAllPlayer();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

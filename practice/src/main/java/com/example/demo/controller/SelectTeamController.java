@@ -26,18 +26,20 @@ public class SelectTeamController {
 			
 		} else if ("kia".equals(selectedTeam)) {
 			
-		} else if ("hanhwa한화".equals(selectedTeam)) {
+		} else if ("hanhwa".equals(selectedTeam)) {
 			
 		} else if ("nc".equals(selectedTeam)) {
 			
 		} else if ("lg".equals(selectedTeam)) {
+			
+		} else if ("kiwoom".equals(selectedTeam)) {
 			
 		} else {
 			
 		}
 		
 		
-		model.addAttribute("team", "lotte");
+		model.addAttribute("team", selectedTeam);
 		return "/teamSelect/teamSelect";
 	}
 }

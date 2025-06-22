@@ -34,8 +34,15 @@ class SavePlayerTest {
                 if (cols.size() > 31) { // 데이터 컬럼 개수 확인
                     Player player = new Player();
                     player.setName(cols.get(1).getText());
-                    String position = cols.get(2).getText().substring(cols.get(2).getText().length() - 2);
+                    
+                    String position = cols.get(2).getText();
+                    if(position.substring(position.length()-1).equals("C") || position.substring(position.length()-1).equals("P")) {
+                    	position = position.substring(position.length()-1);
+                    } else {
+                    	position = position.substring(position.length()-2);
+                    }
                     player.setPosition(position);
+                    
                     player.setWar(cols.get(3).getText());
                     player.setOWar(cols.get(4).getText());
                     player.setDWar(cols.get(5).getText());
@@ -72,11 +79,6 @@ class SavePlayerTest {
                     players.add(player);
                 }
             }
-            // JSON 변환
-            ObjectMapper objectMapper = new ObjectMapper();
-            String jsonOutput = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(players);
-            
-            System.out.println(jsonOutput);  // 콘솔에 JSON 출력
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

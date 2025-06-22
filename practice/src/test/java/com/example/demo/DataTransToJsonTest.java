@@ -7,12 +7,13 @@ import org.openqa.selenium.WebElement;
 
 import com.example.demo.repository.PlayerRepository;
 import com.example.demo.util.CrawlingUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.example.demo.dao.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 
-class DataTransToJsonTest2 {
+class DataTransToJsonTest {
 
     PlayerRepository playerRepository = new PlayerRepository();
 
@@ -71,6 +72,13 @@ class DataTransToJsonTest2 {
                     players.add(player);
                 }
             }
+            
+            // JSON 변환
+            ObjectMapper objectMapper = new ObjectMapper();
+            String jsonOutput = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(players);
+            
+            System.out.println(jsonOutput);  // 콘솔에 JSON 출력
+            
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

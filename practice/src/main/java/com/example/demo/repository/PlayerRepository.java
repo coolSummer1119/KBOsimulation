@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import org.springframework.stereotype.Repository;
 
@@ -29,6 +30,7 @@ public class PlayerRepository {
 		
 		try {
 			con = getConnection();
+			//TODO 커넥션 풀로 바꿔서 선수생성할때마다 커넥션을 새로 따지말고 Hikari에서 꺼내 쓰는 방법으로 or 그룹화
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, player.getName());
 			pstmt.setString(2, player.getPosition());
@@ -76,7 +78,69 @@ public class PlayerRepository {
 		return player;
 	}
 	
-	public void clearAllPlayer() throws Exception {
+	public ArrayList<Player> selectedTeamPlayer(String team) throws Exception {
+		ArrayList<Player> players = new ArrayList<>();
+		
+		String sql = "select * from player where team='" + team + "'";
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try {
+			con = getConnection();
+			pstmt = con.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				Player player = new Player();
+				player.setName(rs.getString("name"));
+				player.setPosition(rs.getString("position"));
+				player.setWar(rs.getString("war"));
+				player.setOWar(rs.getString("owar"));
+				player.setDWar(rs.getString("dwar"));
+				player.setG(rs.getString("g"));
+				player.setPa(rs.getString("pa"));
+				player.setEPA(rs.getString("epa"));
+				player.setAb(rs.getString("ab"));
+				player.setR(rs.getString("r"));
+				player.setH(rs.getString("h"));
+				player.setSecondB(rs.getString("secondb"));
+				player.setThirdB(rs.getString("thirdb"));
+				player.setHr(rs.getString("hr"));
+				player.setTb(rs.getString("tb"));
+				player.setRbi(rs.getString("rbi"));
+				player.setSb(rs.getString("sb"));
+				player.setCs(rs.getString("cs"));
+				player.setBb(rs.getString("bb"));
+				player.setHp(rs.getString("hp"));
+				player.setIb(rs.getString("ib"));
+				player.setSo(rs.getString("so"));
+				player.setGdp(rs.getString("gdp"));
+				player.setSh(rs.getString("sh"));
+				player.setSf(rs.getString("sf"));
+				player.setAvg(rs.getString("avg"));
+				player.setObp(rs.getString("obp"));
+				player.setSlg(rs.getString("slg"));
+				player.setOps(rs.getString("ops"));
+				player.setRePA(rs.getString("repam"));
+				player.setWrcP(rs.getString("wrcp"));
+				player.setTeam(rs.getString("team"));
+				
+                players.add(player);
+			}
+			
+			
+		} catch (Exception e) {
+			log.error("db error",e);
+			throw e;
+		} finally {
+			close(con, pstmt, null);
+		}
+		
+		return players;
+	}
+	
+	public void removeAllPlayer() throws Exception {
 		String sql = "delete from player;";
 		Connection con = null;
 		PreparedStatement pstmt = null;
