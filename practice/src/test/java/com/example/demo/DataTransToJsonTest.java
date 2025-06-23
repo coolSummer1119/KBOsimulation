@@ -5,7 +5,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import com.example.demo.repository.PlayerRepository;
+import com.example.demo.repository.LegacyPlayerRepository;
 import com.example.demo.util.CrawlingUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.example.demo.dao.Player;
@@ -15,7 +15,7 @@ import java.util.List;
 
 class DataTransToJsonTest {
 
-    PlayerRepository playerRepository = new PlayerRepository();
+    LegacyPlayerRepository playerRepository = new LegacyPlayerRepository();
 
     @Test
     void savePlayer() {
@@ -68,7 +68,7 @@ class DataTransToJsonTest {
                     player.setTeam("lotte");
 
                     // 데이터 저장
-                    playerRepository.savePlayer(player);
+                    playerRepository.save(player);
                     players.add(player);
                 }
             }
