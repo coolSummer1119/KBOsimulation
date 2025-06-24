@@ -5,23 +5,33 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.aspectj.lang.annotation.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import com.example.demo.dao.Player;
-import com.example.demo.repository.LegacyPlayerRepository;
 import com.example.demo.repository.PlayerRepository;
 import com.example.demo.util.CrawlingUtil;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
+@SpringBootTest
 class SavePlayerTest {
 
+	@Autowired
 	DataSource dataSource;
 	
-    PlayerRepository playerRepository = new LegacyPlayerRepository(dataSource);
-
+	@Autowired
+    PlayerRepository playerRepository;
+    
+    @BeforeEach
+    void checkDataSource() {
+    	System.out.println("dataSource : " + dataSource.toString());
+    }
+    
     @Test
     void savePlayer() {
         WebDriver driver = CrawlingUtil.webDriverSetting();

@@ -16,7 +16,6 @@ import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
 
 import com.example.demo.dao.Player;
-import com.example.demo.util.DBConnectionUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,6 +26,7 @@ public class LegacyPlayerRepository implements PlayerRepository{
 	private final DataSource dataSource;
 	
 	public LegacyPlayerRepository(DataSource dataSource) {
+		System.out.println("datSource : " + dataSource.toString());
 		this.dataSource = dataSource;
 	}
 	
@@ -37,13 +37,13 @@ public class LegacyPlayerRepository implements PlayerRepository{
 			    + "secondB, thirdB, hr, tb, rbi, sb, cs, bb, hp, ib, so, gdp, sh, sf, "
 			    + "\"AVG\", obp, slg, ops, rePAm, wrcP, team)"
 			    + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-		Connection con = null;
+		Connection conn = null;
 		PreparedStatement pstmt = null;
 		
 		try {
-			con = getConnection();
+			conn = getConnection();
 			//TODO 커넥션 풀로 바꿔서 선수생성할때마다 커넥션을 새로 따지말고 Hikari에서 꺼내 쓰는 방법으로 or 그룹화
-			pstmt = con.prepareStatement(sql);
+			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, player.getName());
 			pstmt.setString(2, player.getPosition());
 			pstmt.setString(3, player.getWar());
@@ -83,7 +83,7 @@ public class LegacyPlayerRepository implements PlayerRepository{
 		} catch (Exception e) {
 			log.error("db error",e);
 		} finally {
-			close(con, pstmt, null);
+			close(conn, pstmt, null);
 		}
 		
 		return player;
@@ -100,13 +100,13 @@ public class LegacyPlayerRepository implements PlayerRepository{
 		ArrayList<Player> players = new ArrayList<>();
 		
 		String sql = "select * from player where team='" + team + "'";
-		Connection con = null;
+		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		
 		try {
-			con = getConnection();
-			pstmt = con.prepareStatement(sql);
+			conn = getConnection();
+			pstmt = conn.prepareStatement(sql);
 			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {
@@ -151,7 +151,7 @@ public class LegacyPlayerRepository implements PlayerRepository{
 		} catch (Exception e) {
 			log.error("db error",e);
 		} finally {
-			close(con, pstmt, null);
+			close(conn, pstmt, null);
 		}
 		
 		return players;
@@ -172,19 +172,19 @@ public class LegacyPlayerRepository implements PlayerRepository{
 	@Override
 	public void deleteAll() {
 		String sql = "delete from player;";
-		Connection con = null;
+		Connection conn = null;
 		PreparedStatement pstmt = null;
 		
 		try {
-			con = getConnection();
-			pstmt = con.prepareStatement(sql);
+			conn = getConnection();
+			pstmt = conn.prepareStatement(sql);
 			pstmt.executeUpdate();
 			System.out.println("db 전체 삭제 완료!!");
 			
 		} catch (Exception e) {
 			log.error("db error",e);
 		} finally {
-			close(con, pstmt, null);
+			close(conn, pstmt, null);
 		}
 	}
 
@@ -192,14 +192,14 @@ public class LegacyPlayerRepository implements PlayerRepository{
 	@Override
 	public int countingAll() {
 		String sql = "Select COUNT(*) AS CNT from player;";
-		Connection con = null;
+		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		int cnt = -1;
 		
 		try {
-			con = getConnection();
-			pstmt = con.prepareStatement(sql);
+			conn = getConnection();
+			pstmt = conn.prepareStatement(sql);
 			rs = pstmt.executeQuery();
 			if(rs.next()) {
 				cnt = rs.getInt("CNT");
@@ -210,12 +210,12 @@ public class LegacyPlayerRepository implements PlayerRepository{
 		} catch (Exception e) {
 			log.error("db error",e);
 		} finally {
-			close(con, pstmt, null);
+			close(conn, pstmt, null);
 		}
 		return cnt;
 	}
 
-	private void close(Connection con, Statement stmt, ResultSet rs) {
+	private void close(Connection conn, Statement stmt, ResultSet rs) {
 		if(rs != null ) {
 			try {
 				rs.close();
@@ -230,9 +230,9 @@ public class LegacyPlayerRepository implements PlayerRepository{
 				log.info("error",e);
 			}
 		} 
-		if(con != null ) {
+		if(conn != null ) {
 			try {
-				con.close();
+				close(conn);
 			} catch (SQLException e) {
 				log.info("error",e);
 			}
@@ -243,6 +243,9 @@ public class LegacyPlayerRepository implements PlayerRepository{
 		return DataSourceUtils.getConnection(dataSource);
 	}
 
+	 private void close(Connection conn) throws SQLException {
+		 DataSourceUtils.releaseConnection(conn, dataSource);
+     }
 
 
 }
