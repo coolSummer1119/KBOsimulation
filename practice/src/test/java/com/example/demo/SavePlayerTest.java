@@ -37,6 +37,7 @@ class SavePlayerTest {
         WebDriver driver = CrawlingUtil.webDriverSetting();
 
         try {
+        	//given
             // 크롤링할 웹사이트 접속
             driver.get("https://statiz.sporki.com/stats/?m=main&m2=batting&m3=default&so=WAR&ob=DESC&year=2024&sy=2024&ey=2024&te=3001&po=&lt=10100&reg=A&pe=&ds=&de=&we=&hr=&ha=&ct=&st=&vp=&bo=&pt=&pp=&ii=&vc=&um=&oo=&rr=&sc=&bc=&ba=&li=&as=&ae=&pl=&gc=&lr=&pr=50&ph=&hs=&us=&na=&ls=&sf1=&sk1=&sv1=&sf2=&sk2=&sv2=");
 
@@ -89,9 +90,12 @@ class SavePlayerTest {
                     player.setWrcP(cols.get(31).getText());
                     player.setTeam("lotte");
 
-                    // 데이터 저장
+                    //when
                     playerRepository.save(player);
                     players.add(player);
+                    
+                    //then
+                    //TODO assertThat으로 검증하는 부분
                 }
             }
         } catch (Exception e) {

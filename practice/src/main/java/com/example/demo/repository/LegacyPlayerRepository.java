@@ -30,6 +30,11 @@ public class LegacyPlayerRepository implements PlayerRepository{
 		this.dataSource = dataSource;
 	}
 	
+	/**
+	 * method : save
+	 * description : 크롤링한 데이터 저장
+	 * return : Player
+	 */
 	@Override
 	public Player save(Player player) {
 		String sql = "INSERT INTO player"
@@ -89,6 +94,11 @@ public class LegacyPlayerRepository implements PlayerRepository{
 		return player;
 	}
 
+	/**
+	 * method : findById
+	 * description : DB에 저장된 데이터 id로 찾기
+	 * return : Optional<Player>
+	 */
 	@Override
 	public Optional<Player> findById(Long id) {
 		// TODO Auto-generated method stub
