@@ -1,11 +1,12 @@
 package com.example.demo;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -13,6 +14,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.dao.Player;
 import com.example.demo.repository.PlayerRepository;
@@ -33,6 +35,7 @@ class SavePlayerTest {
     }
     
     @Test
+    @Transactional
     void savePlayer() {
         WebDriver driver = CrawlingUtil.webDriverSetting();
 
@@ -41,7 +44,7 @@ class SavePlayerTest {
             // 크롤링할 웹사이트 접속
             driver.get("https://statiz.sporki.com/stats/?m=main&m2=batting&m3=default&so=WAR&ob=DESC&year=2024&sy=2024&ey=2024&te=3001&po=&lt=10100&reg=A&pe=&ds=&de=&we=&hr=&ha=&ct=&st=&vp=&bo=&pt=&pp=&ii=&vc=&um=&oo=&rr=&sc=&bc=&ba=&li=&as=&ae=&pl=&gc=&lr=&pr=50&ph=&hs=&us=&na=&ls=&sf1=&sk1=&sv1=&sf2=&sk2=&sv2=");
 
-            List<Player> players = new ArrayList<>();
+            ArrayList<Player> players = new ArrayList<>();
             List<WebElement> rows = driver.findElements(By.cssSelector("table tbody tr")); // 테이블 행 선택
 
             for (WebElement row : rows) {
@@ -94,10 +97,14 @@ class SavePlayerTest {
                     playerRepository.save(player);
                     players.add(player);
                     
-                    //then
-                    //TODO assertThat으로 검증하는 부분
                 }
             }
+            //then
+            ArrayList<Player> checkPlayers = playerRepository.findByTeam("lotte");
+            
+            assertThat(players).hasSameElementsAs(checkPlayers);
+            
+            
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
